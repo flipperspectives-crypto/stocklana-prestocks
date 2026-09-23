@@ -9,7 +9,7 @@
 | Field | Paste |
 | --- | --- |
 | GitHub | https://github.com/flipperspectives-crypto/stocklana-prestocks |
-| Live demo | https://flipperspectives-crypto.github.io/stocklana-prestocks/ |
+| Live demo | https://flipperspectives-crypto.github.io/stocklana-prestocks/?v=cors2 |
 | API | https://prestocks.com/api/prestocks |
 | Sponsor | PreStocks |
 

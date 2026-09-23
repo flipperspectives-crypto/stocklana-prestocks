@@ -1,6 +1,6 @@
 # Pages demo checklist (Stocklana)
 
-**Live URL:** https://flipperspectives-crypto.github.io/stocklana-prestocks/  
+**Live URL:** https://flipperspectives-crypto.github.io/stocklana-prestocks/?v=cors2  
 **Hard refresh** if you see a stale build (Cmd/Ctrl+Shift+R).
 
 ## Before record

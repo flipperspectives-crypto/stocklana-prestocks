@@ -66,7 +66,7 @@ MIT — hackathon demo code.
 
 ## Live demo
 
-- **GitHub Pages:** https://flipperspectives-crypto.github.io/stocklana-prestocks/
+- **GitHub Pages:** https://flipperspectives-crypto.github.io/stocklana-prestocks/?v=cors2
 - **Repo:** https://github.com/flipperspectives-crypto/stocklana-prestocks
 
 Open the Pages URL — the board fetches PreStocks live in the browser (no install).
