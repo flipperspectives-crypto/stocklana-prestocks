@@ -25,3 +25,8 @@
 1. Register at https://hackathons.solana.com/hackathons/stocklana.
 2. Choose **Submit Project** and paste the exact GitHub and Pages URLs above.
 3. Select the **PreStocks** track before the deadline.
+
+## Related
+
+- Paste-ready copy: [`SUBMISSION_COPY.md`](./SUBMISSION_COPY.md)
+- Demo/screenshot checklist: [`DEMO_CHECKLIST.md`](./DEMO_CHECKLIST.md)
