@@ -1,4 +1,5 @@
 import "./style.css"
+import { briefingPicks, fmtPct, premiumPct, sortByAbsGap } from "./lib/prestocks.js"
 
 /**
  * PreStocks Board — thin Stocklana MVP
@@ -29,18 +30,6 @@ function fmtCompact(n) {
     notation: 'compact',
     maximumFractionDigits: 2,
   }).format(n)
-}
-
-/** Premium (+) / discount (−) of tokenPrice vs markPrice */
-function premiumPct(tokenPrice, markPrice) {
-  if (!markPrice || markPrice === 0) return null
-  return ((tokenPrice - markPrice) / markPrice) * 100
-}
-
-function fmtPct(p) {
-  if (p == null || Number.isNaN(p)) return '—'
-  const sign = p > 0 ? '+' : ''
-  return `${sign}${p.toFixed(2)}%`
 }
 
 function shortMint(addr) {
@@ -131,17 +120,12 @@ function escapeHtml(s) {
 
 
 function briefing(sorted) {
-  if (!sorted.length) return ''
-  const withPct = sorted
-    .map((item) => ({ item, pct: premiumPct(item.tokenPrice, item.markPrice) }))
-    .filter((x) => x.pct != null)
-  if (!withPct.length) return ''
-  const hi = withPct.reduce((a, b) => (b.pct > a.pct ? b : a))
-  const lo = withPct.reduce((a, b) => (b.pct < a.pct ? b : a))
+  const { biggestPremium, biggestDiscount } = briefingPicks(sorted)
+  if (!biggestPremium || !biggestDiscount) return ''
   return `<section class="brief" aria-label="Agent briefing">
     <strong>Agent briefing</strong>
-    <span>Biggest premium: <em>${escapeHtml(hi.item.symbol)}</em> ${fmtPct(hi.pct)}</span>
-    <span>Biggest discount: <em>${escapeHtml(lo.item.symbol)}</em> ${fmtPct(lo.pct)}</span>
+    <span>Biggest premium: <em>${escapeHtml(biggestPremium.item.symbol)}</em> ${fmtPct(biggestPremium.pct)}</span>
+    <span>Biggest discount: <em>${escapeHtml(biggestDiscount.item.symbol)}</em> ${fmtPct(biggestDiscount.pct)}</span>
     <span class="muted">Sort is by |gap| — outliers first for quarantine-style attention.</span>
   </section>`
 }
@@ -163,11 +147,7 @@ async function load(manual = false) {
     if (!Array.isArray(data)) throw new Error('Unexpected API shape')
 
     // Sort by absolute premium/discount so outliers float up
-    const sorted = [...data].sort((a, b) => {
-      const pa = Math.abs(premiumPct(a.tokenPrice, a.markPrice) || 0)
-      const pb = Math.abs(premiumPct(b.tokenPrice, b.markPrice) || 0)
-      return pb - pa
-    })
+    const sorted = sortByAbsGap(data)
 
     const now = new Date().toLocaleString('en-US', {
       timeZone: 'America/Havana',
