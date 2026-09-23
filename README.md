@@ -62,3 +62,26 @@ See [SUBMIT.md](./SUBMIT.md) for the submit checklist.
 ## License
 
 MIT — hackathon demo code.
+
+
+## Live demo
+
+- **GitHub Pages:** https://flipperspectives-crypto.github.io/stocklana-prestocks/
+- **Repo:** https://github.com/flipperspectives-crypto/stocklana-prestocks
+
+Open the Pages URL — the board fetches PreStocks live in the browser (no install).
+
+## Demo script (2–3 min)
+
+1. Open the live demo URL on phone or desktop.
+2. Show the board loading from `https://prestocks.com/api/prestocks` (free, no key).
+3. Point at one outlier: premium/discount % = `(tokenPrice − markPrice) / markPrice`.
+4. Click a Solscan mint link for a PreStocks contract.
+5. Mention Stocklana **Best Use of PreStocks** track + $0 capital (browser-only).
+
+## Stocklana register (Lauren)
+
+1. Open https://hackathons.solana.com/hackathons/stocklana
+2. Click **Register** → sign in with **Google** (preferred), wallet, or magic link.
+3. After registered: **Submit Project** → paste GitHub + live demo → pick **PreStocks**.
+4. Deadline: **Fri Sep 25, 2026, 4:00pm ET**. Edits allowed until close.
