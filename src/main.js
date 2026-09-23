@@ -14,6 +14,8 @@ const SOLSCAN_TOKEN = (mint) => `https://solscan.io/token/${mint}`
 const REFRESH_MS = 60_000
 
 const app = document.querySelector('#app')
+let lastSorted = []
+let filterQuery = ''
 
 function fmtUsd(n) {
   if (n == null || Number.isNaN(n)) return '—'
@@ -62,6 +64,11 @@ function renderShell({ statusHtml, cardsHtml, updatedAt, briefingHtml = "" }) {
         <span><strong>Premium / discount</strong> = (token − mark) / mark</span>
       </section>
       ${briefingHtml || ''}
+      <div class="toolbar">
+        <label class="sr-only" for="filter">Filter PreStocks</label>
+        <input id="filter" class="filter" type="search" placeholder="Filter by name or symbol…" value="${escapeHtml(filterQuery)}" autocomplete="off" />
+        <span class="muted" id="count"></span>
+      </div>
       <div id="board" class="board" role="list">${cardsHtml}</div>
     </main>
 
@@ -73,6 +80,33 @@ function renderShell({ statusHtml, cardsHtml, updatedAt, briefingHtml = "" }) {
   `
 
   document.querySelector('#refresh')?.addEventListener('click', () => load(true))
+  const filter = document.querySelector('#filter')
+  filter?.addEventListener('input', () => {
+    filterQuery = filter.value || ''
+    paintBoard(lastSorted)
+  })
+  paintBoard(lastSorted)
+}
+
+function matchesFilter(item, q) {
+  if (!q) return true
+  const needle = q.trim().toLowerCase()
+  if (!needle) return true
+  return `${item.name || ''} ${item.symbol || ''}`.toLowerCase().includes(needle)
+}
+
+function paintBoard(sorted) {
+  lastSorted = sorted || []
+  const board = document.querySelector('#board')
+  const count = document.querySelector('#count')
+  if (!board) return
+  const filtered = lastSorted.filter((item) => matchesFilter(item, filterQuery))
+  board.innerHTML = filtered.length
+    ? filtered.map(card).join('')
+    : `<p class="empty">No PreStocks match “${escapeHtml(filterQuery)}”.</p>`
+  if (count) count.textContent = lastSorted.length
+    ? `${filtered.length} / ${lastSorted.length} shown`
+    : ''
 }
 
 function card(item) {
@@ -163,6 +197,7 @@ async function load(manual = false) {
 
   try {
     const sorted = sortByAbsGap(data)
+    lastSorted = sorted
     const now = new Date().toLocaleString('en-US', {
       timeZone: 'America/Havana',
       dateStyle: 'medium',
