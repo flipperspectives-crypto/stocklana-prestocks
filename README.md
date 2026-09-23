@@ -85,3 +85,14 @@ Open the Pages URL — the board fetches PreStocks live in the browser (no insta
 2. Click **Register** → sign in with **Google** (preferred), wallet, or magic link.
 3. After registered: **Submit Project** → paste GitHub + live demo → pick **PreStocks**.
 4. Deadline: **Fri Sep 25, 2026, 4:00pm ET**. Edits allowed until close.
+
+## CORS / data source
+
+`prestocks.com/api/prestocks` does **not** send `Access-Control-Allow-Origin`, so browsers on GitHub Pages cannot call it directly.
+
+This app:
+1. Tries the live API (works on some local setups)
+2. Falls back to same-origin `./prestocks.json` (shipped in `public/`, copied into `docs/` on build)
+3. A GitHub Action refreshes the snapshot hourly
+
+Judges always see a working board on Pages.
