@@ -48,7 +48,7 @@ function shortMint(addr) {
   return `${addr.slice(0, 4)}…${addr.slice(-4)}`
 }
 
-function renderShell({ statusHtml, cardsHtml, updatedAt }) {
+function renderShell({ statusHtml, cardsHtml, updatedAt, briefingHtml = "" }) {
   app.innerHTML = `
     <header class="top">
       <div class="brand">
@@ -70,6 +70,7 @@ function renderShell({ statusHtml, cardsHtml, updatedAt }) {
         <span><strong>Token</strong> = PreStocks market price</span>
         <span><strong>Premium / discount</strong> = (token − mark) / mark</span>
       </section>
+      ${briefingHtml || ''}
       <div id="board" class="board" role="list">${cardsHtml}</div>
     </main>
 
@@ -128,6 +129,23 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;')
 }
 
+
+function briefing(sorted) {
+  if (!sorted.length) return ''
+  const withPct = sorted
+    .map((item) => ({ item, pct: premiumPct(item.tokenPrice, item.markPrice) }))
+    .filter((x) => x.pct != null)
+  if (!withPct.length) return ''
+  const hi = withPct.reduce((a, b) => (b.pct > a.pct ? b : a))
+  const lo = withPct.reduce((a, b) => (b.pct < a.pct ? b : a))
+  return `<section class="brief" aria-label="Agent briefing">
+    <strong>Agent briefing</strong>
+    <span>Biggest premium: <em>${escapeHtml(hi.item.symbol)}</em> ${fmtPct(hi.pct)}</span>
+    <span>Biggest discount: <em>${escapeHtml(lo.item.symbol)}</em> ${fmtPct(lo.pct)}</span>
+    <span class="muted">Sort is by |gap| — outliers first for quarantine-style attention.</span>
+  </section>`
+}
+
 function skeletonCards(n = 6) {
   return Array.from({ length: n }, () => `<div class="card skeleton" aria-hidden="true"></div>`).join('')
 }
@@ -161,6 +179,7 @@ async function load(manual = false) {
       statusHtml: `<span class="ok">Live · ${sorted.length} tokens</span>`,
       cardsHtml: sorted.map(card).join(''),
       updatedAt: now,
+      briefingHtml: briefing(sorted),
     })
   } catch (err) {
     renderShell({
